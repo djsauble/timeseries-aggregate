@@ -1,0 +1,24 @@
+{
+  "name": "timeseries-aggregate",
+  "version": "0.0.1",
+  "author": "Daniel Sauble",
+  "description": "Given a set of timeseries data, produce an array of sums over multiple data intervals",
+  "keywords": [
+    "timeseries",
+    "sum",
+    "intervals",
+    "aggregate"
+  ],
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "browserify": "*",
+    "grunt": "*",
+    "grunt-browserify": "*",
+    "grunt-contrib-jshint": "*",
+    "grunt-contrib-qunit": "*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/djsauble/timeseries-aggregate.git"
+  }
+}
