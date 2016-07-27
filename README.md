@@ -5,17 +5,17 @@ each, ending at the date given.
 Series data is expected to be an array of objects of the
 following format:
 
-{
-  timestamp: Date,
-  value: Number
-}
+    {
+      timestamp: Date,
+      value: Number
+    }
 
 The output is an array of objects of the following format:
 
-{
-  period: Date, // The start of the period being sum
-  sum: Number   // The sum of values in the period
-}
+    {
+      period: Date, // The start of the period being sum
+      sum: Number   // The sum of values in the period
+    }
 
 This algorithm is weighted toward sums that favor the end of
 the series array (most recent values), as it iterates from 
