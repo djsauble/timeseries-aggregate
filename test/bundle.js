@@ -6,7 +6,7 @@ var DAY_IN_MS    = HOUR_IN_MS * 24;
 var WEEK_IN_MS   = DAY_IN_MS * 7;
 
 // Calculate an array of sums over the specified periods
-var aggregate = function(endDate, numPeriods, periodDurationInMs, series) {
+var sum = function(endDate, numPeriods, periodDurationInMs, series) {
   var iterator = new Date(endDate.getTime() - periodDurationInMs),
       sumByPeriod = [],
       obj = {
@@ -48,8 +48,57 @@ var aggregate = function(endDate, numPeriods, periodDurationInMs, series) {
   return sumByPeriod;
 };
 
+// Calculate an average of values over the specified periods
+var average = function(endDate, numPeriods, periodDurationInMs, series) {
+  var iterator = new Date(endDate.getTime() - periodDurationInMs),
+      averageByPeriod = [],
+      period = iterator,
+      sum = 0,
+      count = 0,
+      point,
+      t;
+
+  for (var i = series.length - 1; i >= 0; --i) {
+    point = series[i];
+    t = point.timestamp;
+
+    // Skip runs that are after the ending date
+    if (t >= endDate) {
+      continue;
+    }
+
+    // Skip runs older than the cutoff
+    if (t < endDate - (periodDurationInMs * numPeriods)) {
+      break;
+    }
+
+    // Account for periods with no data at all
+    while (t < iterator) {
+      iterator = new Date(iterator.getTime() - periodDurationInMs);
+      averageByPeriod.unshift({
+        period: period,
+        average: (count > 0 ? sum / count : 0)
+      });
+      period = iterator;
+      sum = 0;
+      count = 0;
+    }
+
+    // Collect data
+    sum += point.value;
+    count += 1;
+  }
+  averageByPeriod.unshift({
+    period: period,
+    average: (count > 0 ? sum / count : 0)
+  });
+
+  return averageByPeriod;
+};
+
 module.exports = {
-  aggregate: aggregate,
+  sum: sum,
+  average: average,
   MINUTE_IN_MS: MINUTE_IN_MS,
   HOUR_IN_MS: HOUR_IN_MS,
   DAY_IN_MS: DAY_IN_MS,
@@ -57,10 +106,10 @@ module.exports = {
 };
 
 },{}],2:[function(require,module,exports){
-var DateSum = require('../index');
+var Aggregate = require('../index');
 
 QUnit.test( 'Calculate sums over two 48-hour periods', function(assert) {
-  var sums = DateSum.aggregate(endDate, numPeriods, periodDurationInMs, series);
+  var sums = Aggregate.sum(endDate, numPeriods, periodDurationInMs, series);
 
   assert.deepEqual(sums, [
     {
@@ -74,9 +123,24 @@ QUnit.test( 'Calculate sums over two 48-hour periods', function(assert) {
   ], 'Passed!');
 });
 
+QUnit.test( 'Calculate averages over two 48-hour periods', function(assert) {
+  var averages = Aggregate.average(endDate, numPeriods, periodDurationInMs, series);
+
+  assert.deepEqual(averages, [
+    {
+      period: p1,
+      average: 5.5
+    },
+    {
+      period: p2,
+      average: 7.5
+    }
+  ], 'Passed!');
+});
+
 var endDate = new Date("June 9, 2016 GMT-0000"),
     numPeriods = 2,
-    periodDurationInMs = DateSum.DAY_IN_MS * 2,
+    periodDurationInMs = Aggregate.DAY_IN_MS * 2,
     p1 = new Date("June 5, 2016 GMT-0000"),
     p2 = new Date("June 7, 2016 GMT-0000"),
     series = [

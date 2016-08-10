@@ -1,33 +1,38 @@
-Given an array of timeseries data ordered from oldest to
-newest, aggregate the sum of X periods of Y milliseconds 
-each, ending at the date given.
+Given an array of timeseries data ordered from oldest to newest, aggregate
+the sum or average of values inside X periods of Y milliseconds each, ending
+at the date given.
 
-Series data is expected to be an array of objects of the
-following format:
+Series data is expected to be an array of objects of the following format:
 
     {
       timestamp: Date,
       value: Number
     }
 
-The output is an array of objects of the following format:
+The output of summation is an array of objects of the following format:
 
     {
-      period: Date, // The start of the period being sum
+      period: Date, // The start of the period being summed
       sum: Number   // The sum of values in the period
     }
 
-This algorithm is weighted toward sums that favor the end of
-the series array (most recent values), as it iterates from 
-end to start.
+The output of averaging is an array of objects of the following format:
+
+    {
+      period: Date,   // The start of the period being averaged
+      average: Number // The average of values in the period
+    }
+
+This algorithm is weighted toward calculations that favor the end of the series
+array (most recent values), as it iterates from end to start.
 
 ## Usage
 
-    var DateSum = require('../index');
+    var Aggregate = require('../index');
 
     var endDate = new Date("June 9, 2016 GMT-0000"),
         numPeriods = 2,
-        periodDurationInMs = DateSum.DAY_IN_MS * 2,
+        periodDurationInMs = Aggregate.DAY_IN_MS * 2,
         series = [
           {
             timestamp: new Date("June 1, 2016 GMT-0000"),
@@ -80,4 +85,4 @@ end to start.
         ];
 
     // Aggregate the two 48-hour periods preceeding June 9th
-    DateSum.aggregate(endDate, numPeriods, periodDurationInMs, series);
+    Aggregate.sum(endDate, numPeriods, periodDurationInMs, series);
