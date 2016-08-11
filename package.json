@@ -1,6 +1,6 @@
 {
   "name": "timeseries-aggregate",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "author": "Daniel Sauble",
   "description": "Given a set of timeseries data, produce an array of sums over multiple data intervals",
   "keywords": [
