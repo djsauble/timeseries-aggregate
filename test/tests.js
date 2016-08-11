@@ -30,6 +30,12 @@ QUnit.test( 'Calculate averages over two 48-hour periods', function(assert) {
   ], 'Passed!');
 });
 
+QUnit.test( 'Calculate sum over an empty set', function(assert) {
+  var sums = Aggregate.sum(endDate, numPeriods, periodDurationInMs, []);
+
+  assert.deepEqual(sums, [], 'Passed!');
+});
+
 var endDate = new Date("June 9, 2016 GMT-0000"),
     numPeriods = 2,
     periodDurationInMs = Aggregate.DAY_IN_MS * 2,

@@ -15,6 +15,11 @@ var sum = function(endDate, numPeriods, periodDurationInMs, series) {
       point,
       t;
 
+  // Do nothing if there's nothing to sum
+  if (!series || series.length === 0) {
+    return [];
+  }
+
   for (var i = series.length - 1; i >= 0; --i) {
     point = series[i];
     t = point.timestamp;
@@ -56,6 +61,11 @@ var average = function(endDate, numPeriods, periodDurationInMs, series) {
       count = 0,
       point,
       t;
+
+  // Do nothing if there's nothing to sum
+  if (!series || series.length === 0) {
+    return [];
+  }
 
   for (var i = series.length - 1; i >= 0; --i) {
     point = series[i];
